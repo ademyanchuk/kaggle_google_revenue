@@ -26,10 +26,10 @@ def process_data(nrows=None):
     :param nrows: process `nrows` rows in dataframes,
     if None, process all data
     """
-    logger.debug('start processing')
 
     if os.path.isfile(FLAT_TRAIN) and os.path.isfile(FLAT_TEST):
         return None
+    logger.debug('start processing')
 
     df = flatten_jsons_in_df(RAW_TRAIN, nrows)
     df.to_csv(FLAT_TRAIN, index=False)
