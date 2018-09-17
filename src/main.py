@@ -18,6 +18,7 @@ def make_pipeline():
     # save_model_info_to_csv()
     logger.debug('Done.')
 
+
 def make_feature_matrix(train_set, valid_set, test_set):
     """
     TODO: implement
@@ -54,5 +55,4 @@ def save_model_info_to_csv():
 
 
 if __name__ == '__main__':
-
     make_pipeline()
