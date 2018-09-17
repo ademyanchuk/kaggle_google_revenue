@@ -9,7 +9,7 @@ def make_pipeline():
     TODO: implement
     """
     logger.debug("Started..")
-    process_data(nrows=10000)
+    process_data()
     # train_set, valid_set, test_set = load_data()
     # make_feature_matrix(train_set, valid_set, test_set)
     # train_model()
