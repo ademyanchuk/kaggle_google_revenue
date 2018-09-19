@@ -1,13 +1,19 @@
 import os
 import json
+import gc
 import pandas as pd
 from pandas.io.json import json_normalize
 
 from log_utils import get_logger
 
-RAW_PATH = os.path.join(os.path.dirname(__file__), '..',  'data')
+RAW_PATH = os.path.join(os.path.dirname(__file__), '..', 'data')
 PROCESSED_PATH = os.path.join(RAW_PATH, 'processed_data')
-FNAMES = ('train.csv', 'test.csv')
+
+RAW_TRAIN = os.path.join(RAW_PATH, 'train.csv')
+RAW_TEST = os.path.join(RAW_PATH, 'test.csv')
+FLAT_TRAIN = os.path.join(PROCESSED_PATH, 'train.csv')
+FLAT_TEST = os.path.join(PROCESSED_PATH, 'test.csv')
+
 JSON_COLUMNS = ['device', 'geoNetwork', 'totals', 'trafficSource']
 
 logger = get_logger(__name__)
@@ -15,29 +21,31 @@ logger = get_logger(__name__)
 
 def process_data(nrows=None):
     """
-    Process jsons in raw dataframes
-    and save flatten dataframes for
-    future use.
+    Process jsons in raw dataframes and save
+    flatten dataframes for future use.
+    :param nrows: process `nrows` rows in dataframes,
+    if None, process all data
     """
-    # ('start processing')
-    flatten_train_path = os.path.join(PROCESSED_PATH, FNAMES[0])
-    flatten_test_path = os.path.join(PROCESSED_PATH, FNAMES[1])
 
-    if not (os.path.isfile(flatten_train_path) and os.path.isfile(flatten_test_path)):
-        make_flatten_data(nrows=nrows)
+    if os.path.isfile(FLAT_TRAIN) and os.path.isfile(FLAT_TEST):
+        return None
+    logger.debug('start processing')
 
-    # ('done processing')
-    return
+    df = flatten_jsons_in_df(RAW_TRAIN, nrows)
+    df.to_csv(FLAT_TRAIN, index=False)
 
+    gc.enable()
+    del df
+    gc.collect()
 
-def make_flatten_data(nrows=None):
-    """
-    Flatten jsons in raw test and train
-    dataframes and save processed data
-    """
-    for fname in FNAMES:
-        df = flatten_jsons_in_df(os.path.join(RAW_PATH, fname), nrows=nrows)
-        df.to_csv(os.path.join(PROCESSED_PATH, fname), index=False)
+    df = flatten_jsons_in_df(RAW_TEST, nrows)
+    df.to_csv(FLAT_TEST, index=False)
+
+    del df
+    gc.collect()
+
+    logger.debug('done processing')
+    return None
 
 
 def flatten_jsons_in_df(path_to_df, nrows=None):

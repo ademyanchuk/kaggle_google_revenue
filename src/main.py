@@ -9,7 +9,7 @@ def make_pipeline():
     TODO: implement
     """
     logger.debug("Started..")
-    process_data(nrows=10000)
+    process_data()
     # train_set, valid_set, test_set = load_data()
     # make_feature_matrix(train_set, valid_set, test_set)
     # train_model()
@@ -17,6 +17,7 @@ def make_pipeline():
     # make_submission()
     # save_model_info_to_csv()
     logger.debug('Done.')
+
 
 def make_feature_matrix(train_set, valid_set, test_set):
     """
@@ -54,5 +55,4 @@ def save_model_info_to_csv():
 
 
 if __name__ == '__main__':
-
     make_pipeline()
