@@ -1,16 +1,14 @@
-from data_utils import process_data, load_data
+from data_utils import preprocess_pipeline
 from log_utils import get_logger
 
 logger = get_logger(__name__)
-
 
 def make_pipeline():
     """
     TODO: implement
     """
-    logger.debug("Started..")
-    process_data()
-    # train_set, valid_set, test_set = load_data()
+    logger.debug("Pipeline started..")
+    train_df, test_df = preprocess_pipeline(nrows=10000)
     # make_feature_matrix(train_set, valid_set, test_set)
     # train_model()
     # validate_model()
