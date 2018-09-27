@@ -4,10 +4,10 @@ import gc
 import pandas as pd
 from pandas.io.json import json_normalize
 
-from cleaner import Cleaner
-from log_utils import get_logger
+from workflow.cleaner import Cleaner
+from workflow.log_utils import get_logger
 
-RAW_PATH = os.path.join(os.path.dirname(__file__), '..', 'data')
+RAW_PATH = os.path.join(os.path.dirname(__file__), '..', '..', 'data')
 PROCESSED_PATH = os.path.join(RAW_PATH, 'processed_data')
 
 RAW_TRAIN = os.path.join(RAW_PATH, 'train.csv')
@@ -74,7 +74,7 @@ def flatten_jsons_in_df(path_to_df, nrows=None):
     return df
 
 
-def load_data():
+def load_data(nrows=None):
     """
     Load train and test as dataframes
     Returns train, test dataframes
@@ -83,8 +83,8 @@ def load_data():
     test_path = os.path.join(PROCESSED_PATH, 'test.csv')
     train_path = os.path.join(PROCESSED_PATH, 'train.csv')
 
-    train_df = load_csv(train_path)
-    test_df = load_csv(test_path)
+    train_df = load_csv(train_path, nrows=nrows)
+    test_df = load_csv(test_path, nrows=nrows)
 
     return train_df, test_df
 
@@ -141,7 +141,7 @@ def preprocess_pipeline(nrows=None, nan_fraction=1):
     process_data(nrows=nrows)
 
     logger.debug('loading flatenned data..')
-    train_df, test_df = load_data()
+    train_df, test_df = load_data(nrows=nrows)
 
     cleaner = Cleaner()
 

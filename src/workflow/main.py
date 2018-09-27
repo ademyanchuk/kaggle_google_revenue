@@ -1,5 +1,5 @@
-from data_utils import preprocess_pipeline
-from log_utils import get_logger
+from workflow.data_utils import preprocess_pipeline
+from workflow.log_utils import get_logger
 
 logger = get_logger(__name__)
 
