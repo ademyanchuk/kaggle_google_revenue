@@ -8,7 +8,7 @@ def make_pipeline():
     TODO: implement
     """
     logger.debug("Pipeline started..")
-    train_df, test_df = preprocess_pipeline(nrows=10000)
+    train_df, test_df = preprocess_pipeline(nan_fraction=0.999)
     # make_feature_matrix(train_set, valid_set, test_set)
     # train_model()
     # validate_model()
