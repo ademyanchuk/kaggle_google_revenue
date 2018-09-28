@@ -111,6 +111,7 @@ def align_frames(train_df, test_df, target_name=TARGET_COL_NAME):
     train_df[target_name] = target_col
     return train_df, test_df
 
+
 def save_processed_to_csv(train_df, test_df):
     """
     Save fully processed train_df and
@@ -119,6 +120,7 @@ def save_processed_to_csv(train_df, test_df):
     """
     train_df.to_csv(PROC_TRAIN, index=False)
     test_df.to_csv(PROC_TEST, index=False)
+
 
 def preprocess_pipeline(nrows=None, nan_fraction=1):
     """
@@ -160,8 +162,47 @@ def preprocess_pipeline(nrows=None, nan_fraction=1):
     return train_df, test_df
 
 
-def train_valid_split():
+def get_train_idx(df, id_columnn, time_column, split_date, format="%Y%m%d"):
     """
-    TODO: implement
+    Make set of unique values of `id_column` from
+    before `split_date`  from  `df` aggregating
+    it by `id_column` and taking min and max values
+    from `time_column` which should contain time information
+
+    :param df: dataframe
+    :type df: pandas.Dataframe
+    :param id_columnn: column name to group by
+    :type id_columnn: str
+    :param time_column: column name with time info
+    :type time_column: str
+    :param split_date: date to split
+    :type split_date: str
+    :param format: format to use for casting `time_column` to datetime
+    :type format: str
+
+    :returns train part of ids
+    :rtype: set
     """
-    pass
+    df[time_column] = pd.to_datetime(df[time_column], format=format)
+    dates_df = df.groupby(id_columnn, as_index=False).agg(
+        {time_column: [min, max]})
+    dates_df.columns = dates_df.columns.droplevel()
+    dates_df = dates_df.rename(columns={'': id_columnn})
+    train_ids = dates_df[dates_df['min'] < split_date].loc[:, id_columnn]
+    return set(train_ids)
+
+
+def train_valid_split(df, id_column, **get_idx_kwargs):
+    """
+    Make a train and valid dataframes from `df`
+    splitting it by some time_split. Use get_train_idx()
+    Refer to its docstring.
+    """
+    train_ids = get_train_idx(df, id_column, **get_idx_kwargs)
+
+    df_cp = df.copy()
+
+    train_df = df_cp[df_cp[id_column].isin(train_ids)]
+    valid_df = df_cp[~df_cp[id_column].isin(train_ids)]
+
+    return train_df.reset_index(drop=True), valid_df.reset_index(drop=True)
