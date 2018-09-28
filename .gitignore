@@ -122,5 +122,8 @@ ENV/
 # Data folders
 data/
 
+# Submissions
+submissions/
+
 
 # End of https://www.gitignore.io/api/visualstudiocode
