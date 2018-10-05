@@ -16,7 +16,7 @@ def get_logger(name):
             '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         sh.setFormatter(formatter)
         logger.addHandler(sh)
-        logger[name] = logger
+        loggers[name] = logger
 
         return logger
 
